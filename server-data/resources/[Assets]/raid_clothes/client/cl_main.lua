@@ -16,7 +16,7 @@ local tattooHashList = CreateHashList()
 local isService = false
 local passedClothing = true
 
-local currentPrice = 0
+local currentPrice = 150
 
 local MenuData = {
     clothing_shop = {
@@ -1092,11 +1092,11 @@ end
 RegisterNetEvent('raid_clothes:openClothing')
 AddEventHandler('raid_clothes:openClothing', function(pDontShowBarber, pShouldCost)
     if pShouldCost ~= nil and pShouldCost then
-        OpenMenu("clothing_shop", 0, 0)
+        OpenMenu("clothing_shop", 150, 150)
         startingMenu = false
     else
         currentPrice = 0
-        OpenMenu("clothing_shop", currentPrice, 0)
+        OpenMenu("clothing_shop", "", 0)
         startingMenu = true
     end
     passedClothing = pDontShowBarber or false
