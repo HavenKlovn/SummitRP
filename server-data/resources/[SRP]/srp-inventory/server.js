@@ -18,7 +18,7 @@ setInterval(clean, 20000)
 
 
 function db(string) {
-    exports["mysql-async"].mysql_execute(string, {}, function(result) {});
+    exports.ghmattimysql.execute(string, {}, function(result) {});
 }
 
 
@@ -33,7 +33,7 @@ onNet("server-update-item", async (player, itemidsent, slot, data) => {
     let playerinvname = 'ply-' + player
     let string = `UPDATE user_inventory2 SET information='${data}' WHERE item_id='${itemidsent}' and name='${playerinvname}' and slot='${slot}'`
 
-    exports["mysql-async"].mysql_execute(string, {}, function() {
+    exports.ghmattimysql.execute(string, {}, function() {
         emit("server-request-update-src", player, src)
 
     });
@@ -44,7 +44,7 @@ function functionRemoveAny(player, itemidsent, amount, openedInv) {
     let playerinvname = 'ply-' + player
     let string = `DELETE FROM user_inventory2 WHERE name='${playerinvname}' and item_id='${itemidsent}' LIMIT ${amount}`
 
-    exports["mysql-async"].mysql_execute(string, {}, function() {
+    exports.ghmattimysql.execute(string, {}, function() {
         emit("server-request-update-src", player, src)
     });
 
@@ -61,7 +61,7 @@ onNet("server-request-update", async (player) => {
     let src = source
     let playerinvname = 'ply-' + player
     let string = `SELECT count(item_id) as amount, id, item_id, name, information, slot, dropped FROM user_inventory2 WHERE name = 'ply-${player}' group by item_id`;
-    exports["mysql-async"].mysql_fetch_all(string, {}, function(inventory) {
+    exports.ghmattimysql.execute(string, {}, function(inventory) {
         emitNet("inventory-update-player", src, [inventory, 0, playerinvname]);
 
     });
@@ -70,7 +70,7 @@ onNet("server-request-update", async (player) => {
 RegisterServerEvent("inventory-degItem")
 onNet("inventory-degItem", async (itemID) => {
     let amount = 4000000
-    exports["mysql-async"].mysql_execute(`UPDATE user_inventory2 set creationDate = ${amount} WHERE id = ${itemID}`, {}, function() {});
+    exports.ghmattimysql.execute(`UPDATE user_inventory2 set creationDate = ${amount} WHERE id = ${itemID}`, {}, function() {});
 });
 
 
@@ -79,7 +79,7 @@ onNet("server-request-update-src", async (player, src) => {
 
     let playerinvname = 'ply-' + player
     let string = `SELECT count(item_id) as amount, item_id, id, name, information, slot, dropped, creationDate, MIN(creationDate) as creationDate, quality FROM user_inventory2 WHERE name = '${playerinvname}' group by item_id`; // slot
-    exports["mysql-async"].mysql_fetch_all(string, {}, function(inventory) {
+    exports.ghmattimysql.execute(string, {}, function(inventory) {
         emitNet("inventory-update-player", src, [inventory, 0, playerinvname]);
     });
 });
@@ -230,7 +230,7 @@ onNet("server-inventory-give", async (player, itemid, slot, amount, generateInfo
     }
 
     let query = `INSERT INTO user_inventory2 (name,item_id,information,slot,creationDate) VALUES ${values};`
-    exports["mysql-async"].mysql_execute(query, {}, function() {
+    exports.ghmattimysql.execute(query, {}, function() {
         emit("server-request-update-src", player, src)
     });
 
@@ -245,7 +245,7 @@ onNet("server-inventory-refresh", async (player, sauce) => {
     }
 
     let string = `SELECT count(item_id) as amount, id, name, item_id, information, slot, dropped,quality, creationDate FROM user_inventory2 where name= 'ply-${player}' group by slot`;
-    exports["mysql-async"].mysql_fetch_all(string, {}, function(inventory) {
+    exports.ghmattimysql.execute(string, {}, function(inventory) {
         if (!inventory) {} else {
             var invArray = inventory;
             var arrayCount = 0;
@@ -286,7 +286,7 @@ onNet("server-inventory-open", async (coords, player, secondInventory, targetNam
     }
     let string = `SELECT count(item_id) as amount, id, name, item_id, information, slot, dropped,  quality, creationDate FROM user_inventory2 where name= 'ply-${player}'  group by slot`;
 
-    exports["mysql-async"].mysql_fetch_all(string, {}, function(inventory) {
+    exports.ghmattimysql.execute(string, {}, function(inventory) {
 
         var invArray = inventory;
         var i;
@@ -301,7 +301,7 @@ onNet("server-inventory-open", async (coords, player, secondInventory, targetNam
             var targetinvname = targetName
 
             let string = `SELECT count(item_id) as amount, id, name, item_id, information, slot, dropped, creationDate FROM user_inventory2 WHERE name = '${targetinvname}' group by slot`;
-            exports["mysql-async"].mysql_fetch_all(string, {}, function(inventory2) {
+            exports.ghmattimysql.execute(string, {}, function(inventory2) {
                 emitNet("inventory-open-target", src, [invArray, arrayCount, playerinvname, inventory2, 0, targetinvname, 500, true]);
 
                 InUseInventories[targetinvname] = player
@@ -535,7 +535,7 @@ onNet("server-inventory-close", async (player, targetInventoryName) => {
             delete DroppedInventories[targetInventoryName];
         } else {
             let string = `SELECT count(item_id) as amount, item_id, name, information, slot, dropped FROM user_inventory2 WHERE name='${targetInventoryName}' group by item_id `;
-            exports["mysql-async"].mysql_fetch_all(string, {}, function(result) {
+            exports.ghmattimysql.execute(string, {}, function(result) {
                 if (result.length == 0 && DroppedInventories[targetInventoryName]) {
                     delete DroppedInventories[targetInventoryName];
                     emitNet("Inventory-Dropped-Remove", -1, [targetInventoryName])
@@ -794,7 +794,7 @@ onNet("server-inventory-stack", async (player, data, coords) => {
     } else {
         let string = `SELECT item_id, id FROM user_inventory2 WHERE slot='${originSlot}' and name='${originInventory}' LIMIT ${moveAmount}`;
 
-        exports["mysql-async"].mysql_fetch_all(string, {}, function(result) {
+        exports.ghmattimysql.execute(string, {}, function(result) {
 
             var itemids = "0"
             for (let i = 0; i < result.length; i++) {
@@ -820,7 +820,7 @@ onNet("server-inventory-swap", (player, data, coords) => {
 
     let string = `SELECT id FROM user_inventory2 WHERE slot='${targetslot}' AND name='${targetname}'`;
 
-    exports["mysql-async"].mysql_fetch_all(string, {}, function(startid) {
+    exports.ghmattimysql.execute(string, {}, function(startid) {
         var itemids = "0"
         for (let i = 0; i < startid.length; i++) {
             itemids = itemids + "," + startid[i].id
@@ -834,7 +834,7 @@ onNet("server-inventory-swap", (player, data, coords) => {
             string = `UPDATE user_inventory2 SET slot='${targetslot}', name ='${targetname}', dropped='0' WHERE slot='${startslot}' AND name='${startname}'`;
         }
 
-        exports["mysql-async"].mysql_execute(string, {}, function(inventory) {
+        exports.ghmattimysql.execute(string, {}, function(inventory) {
             if (startname.indexOf("Drop") > -1 || startname.indexOf("hidden") > -1) {
                 db(`UPDATE user_inventory2 SET slot='${startslot}', name='${startname}', dropped='1' WHERE id IN (${itemids})`);
             } else {
