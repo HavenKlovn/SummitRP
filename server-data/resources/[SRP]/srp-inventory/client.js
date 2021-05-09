@@ -123,16 +123,17 @@ on('srp-base:playerSpawned', (broughtData) => {
 })
 
 RegisterNetEvent('srp-base:update:settings')
-on('srp-base:update:settings', (Data) => {
-	console.log(Data.holdToDrag)
+on('srp-base:update:settings', (data) => {
+	let holdToDrag = data.holdToDrag;
+	console.log(data.holdToDrag)
     SendNuiMessage(
         JSON.stringify({
             response: 'UpdateSettings',
-            holdToDrag: Data.holdToDrag,
-            closeOnClick: Data.closeOnClick,
-            ctrlMovesHalf: Data.ctrlMovesHalf,
-            showTooltips: Data.showTooltips,
-            enableBlur: Data.enableBlur,
+            holdToDrag: data.holdToDrag,
+            closeOnClick: data.closeOnClick,
+            ctrlMovesHalf: data.ctrlMovesHalf,
+            showTooltips: data.showTooltips,
+            enableBlur: data.enableBlur,
         }),
     );
 })
