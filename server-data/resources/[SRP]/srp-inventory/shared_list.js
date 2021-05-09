@@ -2248,6 +2248,21 @@ itemList["femaleseed"] = {
 }
 
 
+itemList["plantpot"] = {
+    fullyDegrades: true,
+    illegal: true,
+    decayrate: 2.0,
+    displayname: "Plant Pot",
+    price: 250,
+    weight: 7,
+    nonStack: false,
+    model: "",
+    image: "plantpot.png",
+    information: "Used for sitting in when depression hits. ",
+    deg: false
+}
+
+
 itemList["methbag"] = {
     fullyDegrades: true,
     illegal: true,
