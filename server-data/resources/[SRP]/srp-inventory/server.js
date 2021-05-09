@@ -587,7 +587,9 @@ function removecash(pSrc, amount) {
 
 setTimeout(CleanDroppedInventory, 5)
 
-
+function sendClientItemList(src) {
+    emitNet('inv:sendItemList', src, itemList)
+}
 
 function DroppedItem(itemArray) {
     itemArray = JSON.parse(itemArray)
