@@ -312,7 +312,7 @@ on('__cfx_nui:dropIncorrectItems', (data, cb) => {
     }, 2000);
 });
 
-//  $.post("http://np-inventory/SlotJustUsed", JSON.stringify({target: targetSlot, origin: originSlot, itemid: itemidsent }));
+//  $.post("http://srp-inventory/SlotJustUsed", JSON.stringify({target: targetSlot, origin: originSlot, itemid: itemidsent }));
 let recentused = [];
 RegisterNuiCallbackType('SlotJustUsed');
 on('__cfx_nui:SlotJustUsed', (data, cb) => {
@@ -711,8 +711,8 @@ function Scan(row) {
     return distancea < checkDistance;
 }
 
-RegisterNetEvent('np-items:SetAmmo');
-on('np-items:SetAmmo', (sentammoTable) => {
+RegisterNetEvent('srp-items:SetAmmo');
+on('srp-items:SetAmmo', (sentammoTable) => {
     if (sentammoTable) {
         ammoTable = sentammoTable;
     }
