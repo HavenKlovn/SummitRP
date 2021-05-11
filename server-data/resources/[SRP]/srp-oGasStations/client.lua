@@ -757,3 +757,17 @@ AddEventHandler("IHATETHIS", function()
  function lerp(min, max, amt)
      return (1 - amt) * min + amt * max
  end
+
+function GetFuel(vehicle)
+	return DecorGetFloat(vehicle, "CurrentFuel")
+end
+
+function SetFuel(vehicle, fuel)
+	if type(fuel) == 'number' and fuel >= 0 and fuel <= 100 then
+		SetVehicleFuelLevel(vehicle, fuel + 0.0)
+		DecorSetFloat(vehicle, "CurrentFuel", GetVehicleFuelLevel(vehicle))
+	end
+end
+
+exports("GetFuel", GetFuel)
+exports("SetFuel", SetFuel)
